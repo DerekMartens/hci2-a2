@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GestureBasedDrawing</string>
+    <string name="rectBtn">Rectangle</string>
+    <string name="circleBtn">Circle</string>
+    <string name="lineBtn">Line</string>
+    <string name="triBtn">Triangle</string>
+</resources>
