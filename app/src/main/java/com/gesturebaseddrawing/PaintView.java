@@ -20,7 +20,7 @@ public class PaintView extends View {
     public static final int DEFAULT_COLOR = Color.BLACK;
     public static final int DEFAULT_BG_COLOR = Color.WHITE;
     private static final float TOUCH_TOLERANCE = 4;
-    private float mX, mY;
+    private float mX, mY, minX, minY, maxX, maxY;
     private Path mPath;
     private Paint mPaint;
     private ArrayList<FingerPath> paths = new ArrayList<>();
@@ -29,6 +29,11 @@ public class PaintView extends View {
     private int strokeWidth;
     private boolean emboss;
     private boolean blur;
+    private boolean freeDraw = false;
+    private boolean square = true;
+    private boolean circle = false;
+    private boolean line = false;
+    private boolean triangle = false;
     private MaskFilter mEmboss;
     private MaskFilter mBlur;
     private Bitmap mBitmap;
@@ -132,6 +137,10 @@ public class PaintView extends View {
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
+        minX = x;
+        maxX = x;
+        minY = y;
+        maxY = y;
     }
 
     private void touchMove(float x, float y) {
@@ -142,11 +151,39 @@ public class PaintView extends View {
             mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
             mX = x;
             mY = y;
+
+            if(!freeDraw) {
+                if (x > maxX) {
+                    maxX = x;
+                } else if (x < minX) {
+                    minX = x;
+                } else if (y > maxY) {
+                    maxY = y;
+                } else if (y < minY) {
+                    minY = y;
+                }
+            }
         }
     }
 
     private void touchUp() {
-        mPath.lineTo(mX, mY);
+        System.out.println("MaxX: "+maxX+", MinX: "+ minX + ", MaxY: " +maxY +", MinY: " + minY );
+        if(freeDraw){
+            mPath.lineTo(mX, mY);
+        }else if(square){
+            mPath.lineTo(mX, mY);
+            mCanvas.drawRect(minX, minY, maxX, maxY, mPaint);
+        }else if(triangle){
+            mPath.lineTo(mX, mY);
+            //not sure how to draw a triangle
+        }else if(circle){
+            mPath.lineTo(mX, mY);
+            mCanvas.drawCircle((minX+maxX)/2, (minY+maxY)/2, (minY+maxY)/2, mPaint);
+        }else if(line){
+            mPath.lineTo(mX, mY);
+            //should probably record start and end position
+        }
+
     }
 
     @Override
@@ -155,14 +192,17 @@ public class PaintView extends View {
         float y = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                //System.out.println("DOWN EVENT: " + x + ", " + y);
                 touchStart(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
+                //System.out.println("MOVE EVENT: " + x + ", " + y);
                 touchMove(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+                //System.out.println("UP EVENT: " + x + ", " + y);
                 touchUp();
                 invalidate();
                 break;
