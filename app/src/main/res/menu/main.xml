@@ -3,17 +3,69 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/normal"
         app:showAsAction="never"
-        android:title="Normal" />
+        android:title="Shapes">
+        <menu>
+            <group
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/freeDraw"
+                    app:showAsAction="never"
+                    android:checked="true"
+                    android:title="Free Draw" />
+                <item
+                    android:id="@+id/line"
+                    app:showAsAction="never"
+                    android:title="Line" />
+                <item
+                    android:id="@+id/rectangle"
+                    app:showAsAction="never"
+                    android:title="Rectangle" />
+                <item
+                    android:id="@+id/square"
+                    app:showAsAction="never"
+                    android:title="Square" />
+                <item
+                    android:id="@+id/circle"
+                    app:showAsAction="never"
+                    android:title="Circle" />
+                <item
+                    android:id="@+id/triangle"
+                    app:showAsAction="never"
+                    android:title="Triangle" />
+            </group>
+        </menu>
+    </item>
     <item
-        android:id="@+id/emboss"
         app:showAsAction="never"
-        android:title="Emboss" />
-    <item
-        android:id="@+id/blur"
-        app:showAsAction="never"
-        android:title="Blur" />
+        android:title="Colors">
+        <menu>
+            <group
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/black"
+                    app:showAsAction="never"
+                    android:checked="true"
+                    android:title="Black" />
+                <item
+                    android:id="@+id/red"
+                    app:showAsAction="never"
+                    android:title="Red" />
+                <item
+                    android:id="@+id/blue"
+                    app:showAsAction="never"
+                    android:title="Blue" />
+                <item
+                    android:id="@+id/green"
+                    app:showAsAction="never"
+                    android:title="Green" />
+                <item
+                    android:id="@+id/yellow"
+                    app:showAsAction="never"
+                    android:title="Yellow" />
+            </group>
+        </menu>
+    </item>
     <item
         android:id="@+id/clear"
         app:showAsAction="never"
