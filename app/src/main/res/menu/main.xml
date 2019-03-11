@@ -18,6 +18,10 @@
                     app:showAsAction="never"
                     android:title="Line" />
                 <item
+                    android:id="@+id/rectangle"
+                    app:showAsAction="never"
+                    android:title="Rectangle" />
+                <item
                     android:id="@+id/square"
                     app:showAsAction="never"
                     android:title="Square" />

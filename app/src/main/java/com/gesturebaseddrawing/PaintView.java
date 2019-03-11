@@ -20,7 +20,7 @@ public class PaintView extends View {
     public static final int DEFAULT_COLOR = Color.BLACK;
     public static final int DEFAULT_BG_COLOR = Color.WHITE;
     private static final float TOUCH_TOLERANCE = 4;
-    private float mX, mY, minX, minY, maxX, maxY;
+    private float mX, mY, minX, minY, maxX, maxY, startX, startY, endX, endY;
     private Path mPath;
     private Paint mPaint;
     private ArrayList<FingerPath> paths = new ArrayList<>();
@@ -29,8 +29,9 @@ public class PaintView extends View {
     private int strokeWidth;
     private boolean emboss;
     private boolean blur;
-    private boolean freeDraw = false;
-    private boolean square = true;
+    private boolean freeDraw = true;
+    private boolean square = false;
+    private boolean rectangle = false;
     private boolean circle = false;
     private boolean line = false;
     private boolean triangle = false;
@@ -84,6 +85,16 @@ public class PaintView extends View {
         triangle = false;
         line = false;
         circle = false;
+        rectangle = false;
+    }
+
+    public void setRectangle(){
+        freeDraw = false;
+        rectangle = true;
+        square = false;
+        triangle = false;
+        line = false;
+        circle = false;
     }
 
     public void setSquare(){
@@ -92,6 +103,7 @@ public class PaintView extends View {
         triangle = false;
         line = false;
         circle = false;
+        rectangle = false;
     }
 
     public void setTriangle(){
@@ -100,6 +112,7 @@ public class PaintView extends View {
         triangle = true;
         line = false;
         circle = false;
+        rectangle = false;
     }
     public void setLine(){
         freeDraw = false;
@@ -107,6 +120,7 @@ public class PaintView extends View {
         triangle = false;
         line = true;
         circle = false;
+        rectangle = false;
     }
     public void setCircle(){
         freeDraw = false;
@@ -114,6 +128,7 @@ public class PaintView extends View {
         triangle = false;
         line = false;
         circle = true;
+        rectangle = false;
     }
     public void clear() {
         backgroundColor = DEFAULT_BG_COLOR;
@@ -157,8 +172,6 @@ public class PaintView extends View {
             mPaint.setStrokeWidth(fp.strokeWidth);
             mPaint.setMaskFilter(null);
 
-            if (fp.emboss) mPaint.setMaskFilter(mEmboss);
-            else if (fp.blur) mPaint.setMaskFilter(mBlur);
             mCanvas.drawPath(fp.path, mPaint);
         }
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
@@ -178,11 +191,15 @@ public class PaintView extends View {
         maxX = x;
         minY = y;
         maxY = y;
+        startX = x;
+        startY = y;
     }
 
     private void touchMove(float x, float y) {
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
+        endX = x;
+        endY = y;
 
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
             mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
@@ -207,20 +224,77 @@ public class PaintView extends View {
         System.out.println("MaxX: "+maxX+", MinX: "+ minX + ", MaxY: " +maxY +", MinY: " + minY );
         if(freeDraw){
             mPath.lineTo(mX, mY);
-        }else if(square){
-            mPath.lineTo(mX, mY);
-            mCanvas.drawRect(minX, minY, maxX, maxY, mPaint);
-        }else if(triangle){
-            mPath.lineTo(mX, mY);
-            //not sure how to draw a triangle
-        }else if(circle){
-            mPath.lineTo(mX, mY);
-            mCanvas.drawCircle((minX+maxX)/2, (minY+maxY)/2, (minY+maxY)/2, mPaint);
-        }else if(line){
-            mPath.lineTo(mX, mY);
-            //should probably record start and end position
-        }
+        }else if(rectangle){
+            paths.remove(paths.size()-1);
+            mPath = new Path();
+            FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
+            paths.add(fp);
+            mPath.reset();
+            mPath.moveTo(minX, minY);
+            mPath.lineTo(minX, maxY);
+            mPath.lineTo(maxX, maxY);
+            mPath.lineTo(maxX, minY);
+            mPath.lineTo(minX, minY);
 
+        }else if(triangle){
+            paths.remove(paths.size()-1);
+            mPath = new Path();
+            FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
+            paths.add(fp);
+            mPath.reset();
+            float width = (maxX-minX);
+            float height = (maxY-minY);
+            mPath.moveTo(startX, startY);
+            if(Math.abs(startY-minY) > Math.abs(startY-maxY)){
+                if(Math.abs(startX-minX) > Math.abs(startX-maxX)){
+                    mPath.lineTo(startX-width, startY);
+                    mPath.lineTo(startX-(width/2), startY-height);
+                }else{
+                    mPath.lineTo(startX+width, startY);
+                    mPath.lineTo(startX+(width/2), startY-height);
+                }
+            }else{
+                if(Math.abs(startX-minX) > Math.abs(startX-maxX)){
+                    mPath.lineTo(startX-width, startY);
+                    mPath.lineTo(startX-(width/2), startY+height);
+                }else{
+                    mPath.lineTo(startX+width, startY);
+                    mPath.lineTo(startX+(width/2), startY+height);
+                }
+            }
+            mPath.lineTo(startX, startY);
+        }else if(circle){
+            paths.remove(paths.size()-1);
+            mPath = new Path();
+            FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
+            paths.add(fp);
+            mPath.reset();
+            mPath.moveTo((minX+maxX)/2, (minY+maxY)/2);
+            float radius = (float) Math.sqrt((maxY - minY) * (maxY - minY) + (maxX - minX) * (maxX - minX))/2;
+            mPath.addCircle((minX+maxX)/2, (minY+maxY)/2, radius, Path.Direction.CW);
+
+        }else if(line){
+            paths.remove(paths.size()-1);
+            mPath = new Path();
+            FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
+            paths.add(fp);
+            mPath.reset();
+            mPath.moveTo(startX, startY);
+            mPath.lineTo(endX, endY);
+
+        }else if (square){
+            paths.remove(paths.size()-1);
+            mPath = new Path();
+            FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
+            paths.add(fp);
+            mPath.reset();
+            float slength = (maxX-minX);
+            mPath.moveTo(minX, minY);
+            mPath.lineTo(minX+slength, minY);
+            mPath.lineTo(minX+slength, minY+slength);
+            mPath.lineTo(minX, minY+slength);
+            mPath.lineTo(minX, minY);
+        }
     }
 
     @Override

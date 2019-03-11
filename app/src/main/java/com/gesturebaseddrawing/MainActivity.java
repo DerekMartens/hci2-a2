@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.clear:
                 paintView.clear();
                 return true;
+            case R.id.rectangle:
+                item.setChecked(true);
+                paintView.setRectangle();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
