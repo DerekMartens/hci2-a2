@@ -22,10 +22,6 @@
                     app:showAsAction="never"
                     android:title="Square" />
                 <item
-                    android:id="@+id/rectangle"
-                    app:showAsAction="never"
-                    android:title="Rectangle" />
-                <item
                     android:id="@+id/circle"
                     app:showAsAction="never"
                     android:title="Circle" />

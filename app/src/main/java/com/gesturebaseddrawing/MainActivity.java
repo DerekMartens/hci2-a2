@@ -35,21 +35,23 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.freeDraw:
                 item.setChecked(true);
+                paintView.setFreeDraw();
                 return true;
             case R.id.line:
                 item.setChecked(true);
+                paintView.setLine();
                 return true;
             case R.id.square:
                 item.setChecked(true);
-                return true;
-            case R.id.rectangle:
-                item.setChecked(true);
+                paintView.setSquare();
                 return true;
             case R.id.circle:
                 item.setChecked(true);
+                paintView.setCircle();
                 return true;
             case R.id.triangle:
                 item.setChecked(true);
+                paintView.setTriangle();
                 return true;
             case R.id.black:
                 paintView.black();
