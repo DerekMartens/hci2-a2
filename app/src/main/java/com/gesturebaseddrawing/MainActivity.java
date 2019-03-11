@@ -11,7 +11,7 @@ import com.gesturebaseddrawing.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PaintView paintView;
+    private PaintView paintView;    //test
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +33,43 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.normal:
-                paintView.normal();
+            case R.id.freeDraw:
+                item.setChecked(true);
                 return true;
-            case R.id.emboss:
-                paintView.emboss();
+            case R.id.line:
+                item.setChecked(true);
                 return true;
-            case R.id.blur:
-                paintView.blur();
+            case R.id.square:
+                item.setChecked(true);
+                return true;
+            case R.id.rectangle:
+                item.setChecked(true);
+                return true;
+            case R.id.circle:
+                item.setChecked(true);
+                return true;
+            case R.id.triangle:
+                item.setChecked(true);
+                return true;
+            case R.id.black:
+                paintView.black();
+                item.setChecked(true);
+                return true;
+            case R.id.red:
+                paintView.red();
+                item.setChecked(true);
+                return true;
+            case R.id.blue:
+                paintView.blue();
+                item.setChecked(true);
+                return true;
+            case R.id.green:
+                paintView.green();
+                item.setChecked(true);
+                return true;
+            case R.id.yellow:
+                paintView.yellow();
+                item.setChecked(true);
                 return true;
             case R.id.clear:
                 paintView.clear();
