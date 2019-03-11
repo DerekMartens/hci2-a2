@@ -11,7 +11,7 @@ import com.gesturebaseddrawing.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PaintView paintView;
+    private PaintView paintView;    //test
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
